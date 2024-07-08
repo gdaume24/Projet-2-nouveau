@@ -1,0 +1,21 @@
+.graphic-title-div {
+    text-align: center;
+}
+
+.flex-container {
+    display: flex;
+    gap: 20px;
+    margin-left: 420px;
+}
+
+app-pie-chart {
+    position: relative;
+    height:30px; 
+    width:30px;
+}
+
+.pie {
+    padding-left: 400px;
+    padding-top:10px;
+    padding-bottom:300px
+}
