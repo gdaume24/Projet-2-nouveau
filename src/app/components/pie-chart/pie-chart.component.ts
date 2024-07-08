@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { OlympicsService } from '../../core/services/olympics.service';
 import * as am5 from "@amcharts/amcharts5";
 import * as am5percent from "@amcharts/amcharts5/percent";
+import { countryData, participation } from '../../core/models/olympics';
 
 @Component({
   selector: 'app-pie-chart',

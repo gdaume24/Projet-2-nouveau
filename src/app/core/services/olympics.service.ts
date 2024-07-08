@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { countryData, participation } from '../../core/models/olympics';
+import { load } from '@amcharts/amcharts5/.internal/core/util/Net';
 
 @Injectable({
   providedIn: 'root'
@@ -11,17 +13,17 @@ export class OlympicsService {
 
   constructor(private http: HttpClient) { }
 
-  loadInitialData() {
-    return this.http.get(this.olympicUrl);
+  loadInitialData(): Observable<countryData[]> {
+    return this.http.get<countryData[]>(this.olympicUrl);
   }
+  initialData$ = this.loadInitialData()
 
   countriesAndTotalMedalsList(): Observable<[string[], number[]]> {
     
     let totalMedalsList: number[] = []
     let countriesNames: string[] = []
 
-    return this.loadInitialData().subscribe(result => {
-    let initialData: any = result
+      let initialData: any = result
       if(initialData != null){
         for(let i=0; i<initialData.length; i++){
           countriesNames.push(initialData[i].country)
@@ -33,7 +35,5 @@ export class OlympicsService {
           totalMedalsList.push(countryTotalMedals)
         }
       }
-    })
     return [countriesNames, totalMedalsList]
   }
-}
