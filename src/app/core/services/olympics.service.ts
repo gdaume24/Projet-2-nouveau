@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { countryData } from '../models/olympics';
 
 @Injectable({
   providedIn: 'root'
@@ -9,31 +10,47 @@ export class OlympicsService {
 
   private olympicUrl = './assets/mock/olympic.json';
 
-  constructor(private http: HttpClient) { }
-
-  loadInitialData() {
-    return this.http.get(this.olympicUrl);
+  constructor(private http: HttpClient) {
   }
 
-  countriesAndTotalMedalsList(): Observable<[string[], number[]]> {
-    
+  loadInitialData(): Observable<countryData[]>{
+    return this.http.get<countryData[]>(this.olympicUrl);
+  }
+
+  observerCountriesAndTotalMedalsList = {
     let totalMedalsList: number[] = []
     let countriesNames: string[] = []
-
-    return this.loadInitialData().subscribe(result => {
-    let initialData: any = result
-      if(initialData != null){
-        for(let i=0; i<initialData.length; i++){
-          countriesNames.push(initialData[i].country)
+    next: (datas: countryData[]) => {
+      if(datas != null){
+        for(let i=0; i<datas.length; i++){
+          countriesNames.push(datas[i].country)
         
           let countryTotalMedals = 0 
-          for(let j=0; j<initialData[i].participations.length; j++){
-            countryTotalMedals += initialData[i].participations[j].medalsCount
+          for(let j=0; j<datas[i].participations.length; j++){
+            countryTotalMedals += datas[i].participations[j].medalsCount
           }
           totalMedalsList.push(countryTotalMedals)
         }
       }
-    })
-    return [countriesNames, totalMedalsList]
+    }
+  return [countriesNames, totalMedalsList]
   }
+
+  countriesAndTotalMedalsList(): [string[], number[]] {
+    let totalMedalsList: number[] = []
+    let countriesNames: string[] = []
+    next: (datas: countryData[]) => {
+      if(datas != null){
+        for(let i=0; i<datas.length; i++){
+          countriesNames.push(datas[i].country)
+        
+          let countryTotalMedals = 0 
+          for(let j=0; j<datas[i].participations.length; j++){
+            countryTotalMedals += datas[i].participations[j].medalsCount
+          }
+          totalMedalsList.push(countryTotalMedals)
+        }
+      }
+    }
+  return [countriesNames, totalMedalsList]}
 }
