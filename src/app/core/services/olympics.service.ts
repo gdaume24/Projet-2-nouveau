@@ -1,56 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { countryData } from '../models/olympics';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class OlympicsService {
-
+export class OlympicService {
   private olympicUrl = './assets/mock/olympic.json';
+  private olympics$ = new BehaviorSubject<countryData[]>([]);
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) {}
 
-  loadInitialData(): Observable<countryData[]>{
-    return this.http.get<countryData[]>(this.olympicUrl);
-  }
-
-  observerCountriesAndTotalMedalsList = {
-    let totalMedalsList: number[] = []
-    let countriesNames: string[] = []
-    next: (datas: countryData[]) => {
-      if(datas != null){
-        for(let i=0; i<datas.length; i++){
-          countriesNames.push(datas[i].country)
-        
-          let countryTotalMedals = 0 
-          for(let j=0; j<datas[i].participations.length; j++){
-            countryTotalMedals += datas[i].participations[j].medalsCount
-          }
-          totalMedalsList.push(countryTotalMedals)
-        }
+  loadData() {
+    this.http.get<countryData[]>(this.olympicUrl).subscribe(
+      (data) => {
+        this.olympics$.next(data);
+      },
+      (error) => {
+        console.error('Erreur lors du chargement des données:', error);
       }
-    }
-  return [countriesNames, totalMedalsList]
+    );
   }
 
-  countriesAndTotalMedalsList(): [string[], number[]] {
-    let totalMedalsList: number[] = []
-    let countriesNames: string[] = []
-    next: (datas: countryData[]) => {
-      if(datas != null){
-        for(let i=0; i<datas.length; i++){
-          countriesNames.push(datas[i].country)
-        
-          let countryTotalMedals = 0 
-          for(let j=0; j<datas[i].participations.length; j++){
-            countryTotalMedals += datas[i].participations[j].medalsCount
-          }
-          totalMedalsList.push(countryTotalMedals)
-        }
-      }
-    }
-  return [countriesNames, totalMedalsList]}
+  getData() {
+    return this.olympics$.asObservable();
+  }
 }
